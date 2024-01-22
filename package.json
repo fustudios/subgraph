@@ -1,14 +1,17 @@
 {
   "name": "fustudios",
+  "version": "0.1.0",
   "license": "UNLICENSED",
   "scripts": {
     "codegen": "graph codegen",
     "build": "graph build",
-    "deploy": "graph deploy --node https://api.studio.thegraph.com/deploy/ fustudios",
-    "create-local": "graph create --node http://localhost:8020/ fustudios",
-    "remove-local": "graph remove --node http://localhost:8020/ fustudios",
-    "deploy-local": "graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 fustudios",
-    "test": "graph test"
+    "deploy:studio": "graph deploy --node https://api.studio.thegraph.com/deploy/ --version-label 0.0.1 fustudios",
+    "deploy": "graph deploy --product hosted-service fustudios/fustudios",
+    "create:local": "graph create --node http://localhost:8020/ fustudios",
+    "remove:local": "graph remove --node http://localhost:8020/ fustudios",
+    "deploy:local": "graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 --version-label 0.0.1 fustudios",
+    "test": "graph test",
+    "dev": "yarn codegen && yarn create:local && yarn deploy:local"
   },
   "dependencies": {
     "@graphprotocol/graph-cli": "0.67.1",

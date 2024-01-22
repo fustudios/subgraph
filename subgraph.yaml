@@ -1,6 +1,4 @@
-specVersion: 1.0.0
-indexerHints:
-  prune: auto
+specVersion: 0.0.7
 schema:
   file: ./schema.graphql
 dataSources:
@@ -13,7 +11,7 @@ dataSources:
       startBlock: 15882029
     mapping:
       kind: ethereum/events
-      apiVersion: 0.0.7
+      apiVersion: 0.0.8
       language: wasm/assemblyscript
       entities:
         - Approval
