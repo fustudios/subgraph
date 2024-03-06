@@ -3,19 +3,22 @@
   "version": "0.1.0",
   "license": "UNLICENSED",
   "scripts": {
+    "prepare:local": "mustache ./networks/local.json ./subgraph.template.yaml > subgraph.yaml",
     "codegen": "graph codegen",
     "build": "graph build",
     "deploy:studio": "graph deploy --node https://api.studio.thegraph.com/deploy/ --version-label 0.0.1 fustudios",
     "deploy": "graph deploy --product hosted-service fustudios/fustudios",
     "create:local": "graph create --node http://localhost:8020/ fustudios",
-    "remove:local": "graph remove --node http://localhost:8020/ fustudios",
     "deploy:local": "graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 --version-label 0.0.1 fustudios",
     "test": "graph test",
     "dev": "yarn codegen && yarn create:local && yarn deploy:local"
   },
   "dependencies": {
     "@graphprotocol/graph-cli": "0.67.1",
-    "@graphprotocol/graph-ts": "0.32.0"
+    "@graphprotocol/graph-ts": "0.32.0",
+    "mustache": "^4.2.0"
   },
-  "devDependencies": { "matchstick-as": "0.5.0" }
+  "devDependencies": {
+    "matchstick-as": "0.5.0"
+  }
 }

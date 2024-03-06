@@ -1,0 +1,6 @@
+{
+  "network": "mainnet",
+  "startBlock": 1,
+  "fuOgNft": "0xe7f1725e7734ce288f8367e1bb143e90bb3f0512",
+  "osCollectionUpgrade": "0x9fE46736679d2D9a65F0992F2272dE9f3c7fa6e0"
+}

@@ -4,11 +4,11 @@ schema:
 dataSources:
   - kind: ethereum
     name: OgNft
-    network: mainnet
+    network: {{network}}
     source:
-      address: "0xe7f1725e7734ce288f8367e1bb143e90bb3f0512"
+      address: "{{fuOgNft}}"
       abi: OgNft
-      startBlock: 1
+      startBlock: {{startBlock}}
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.8
