@@ -8,16 +8,23 @@ type Transfer @entity(immutable: true) {
   transactionHash: Bytes!
 }
 
-enum NftType {
-  Og
+type Collection @entity {
+  id: Bytes!
+  code: String
+  name: String
+  createdAt: BigInt!
+  numNftsUpgraded: BigInt!
+  fees: BigInt!
+  nfts: [Nft!]! @derivedFrom(field: "collection")
 }
 
 type Nft @entity {
   id: String!
-  type: NftType
+  collection: Collection!
   tokenId: BigInt
   firstUser: User
   user: User
+  tokenURI: String
   createdAt: BigInt!
   transfers: [Transfer!]! @derivedFrom(field: "nft")
 }

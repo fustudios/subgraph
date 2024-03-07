@@ -7,7 +7,7 @@ dataSources:
     network: {{network}}
     source:
       address: "{{fuOgNft}}"
-      abi: OgNft
+      abi: Nft
       startBlock: {{startBlock}}
     mapping:
       kind: ethereum/events
@@ -15,10 +15,58 @@ dataSources:
       language: wasm/assemblyscript
       entities:
         - Transfer
+        - Nft
       abis:
-        - name: OgNft
-          file: ./abis/OgNft.json
+        - name: Nft
+          file: ./abis/Nft.json
       eventHandlers:
         - event: Transfer(indexed address,indexed address,indexed uint256)
           handler: handleTransfer
       file: ./src/og-nft.ts
+  - kind: ethereum
+    name: CollectionUpgrade
+    network: {{network}}
+    source:
+      address: "{{osCollectionUpgrade}}"
+      abi: CollectionUpgrade
+      startBlock: {{startBlock}}
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.8
+      language: wasm/assemblyscript
+      entities:
+        - Collection
+        - Nft
+      abis:
+        - name: CollectionUpgrade
+          file: ./abis/CollectionUpgrade.json
+        - name: Nft
+          file: ./abis/Nft.json
+      eventHandlers:
+        - event: WhitelistCollection(indexed address)
+          handler: handleWhitelistCollection
+        - event: UpgradeNFT(indexed address,uint256)
+          handler: handleUpgradeNFT
+        - event: AddFee(indexed address,indexed address,uint256)
+          handler: handleAddFee
+      file: ./src/upgrade.ts
+templates:
+  - kind: ethereum/contract
+    name: Collection
+    network: {{network}}
+    source:
+      abi: Nft
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.8
+      language: wasm/assemblyscript
+      entities:
+        - Collection
+        - Nft
+      abis:
+        - name: Nft
+          file: ./abis/Nft.json
+      eventHandlers:
+        - event: Transfer(indexed address,indexed address,indexed uint256)
+          handler: handleTransfer
+      file: ./src/nft.ts
