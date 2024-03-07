@@ -1,7 +1,8 @@
 import { Transfer as TransferEvent } from '../../generated/OgNft/OgNft';
-import { BigInt, Bytes, ethereum, log } from '@graphprotocol/graph-ts';
+import { Address, BigInt, Bytes, ethereum, log } from '@graphprotocol/graph-ts';
 import { Nft, Transfer } from '../../generated/schema';
 import { createOrUpdateUser } from './user';
+import { Nft as NftContract } from '../../generated/CollectionUpgrade/Nft';
 
 export function getTransferId(event: ethereum.Event): string {
   return (
@@ -11,24 +12,30 @@ export function getTransferId(event: ethereum.Event): string {
   );
 }
 
-export function getNftId(collectionId: Bytes, tokenId: BigInt): string {
+export function getNftId(collectionId: Address, tokenId: BigInt): string {
   return collectionId.toHex() + '_' + tokenId.toString();
 }
 
-export function createNft(collectionId: Bytes, tokenId: BigInt, userId: Bytes, ts: BigInt): Nft {
+export function createNft(collectionId: Address, tokenId: BigInt, userId: Bytes, ts: BigInt): Nft {
   let nftId = getNftId(collectionId, tokenId);
+
+  let nftContract = NftContract.bind(collectionId);
+  let tokenUri = nftContract.tokenURI(tokenId);
+  log.warning('URI: {}', [tokenUri.toString()]);
+
   let nft = new Nft(nftId);
   nft.collection = collectionId;
   nft.tokenId = tokenId;
   nft.firstUser = userId;
   nft.user = userId;
   nft.createdAt = ts;
+  nft.tokenUri = tokenUri;
   nft.save();
 
   return nft;
 }
 
-export function createOrUpdateNft(collectionId: Bytes, tokenId: BigInt, userId: Bytes, ts: BigInt): Nft {
+export function createOrUpdateNft(collectionId: Address, tokenId: BigInt, userId: Bytes, ts: BigInt): Nft {
   let nftId = getNftId(collectionId, tokenId);
 
   let nft = Nft.load(nftId);

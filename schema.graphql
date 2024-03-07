@@ -24,7 +24,7 @@ type Nft @entity {
   tokenId: BigInt
   firstUser: User
   user: User
-  tokenURI: String
+  tokenUri: String
   createdAt: BigInt!
   transfers: [Transfer!]! @derivedFrom(field: "nft")
 }
