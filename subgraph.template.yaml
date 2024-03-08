@@ -45,7 +45,7 @@ dataSources:
       eventHandlers:
         - event: WhitelistCollection(indexed address)
           handler: handleWhitelistCollection
-        - event: UpgradeNFT(indexed address,uint256)
+        - event: UpgradeNFT(indexed address,uint256,uint8)
           handler: handleUpgradeNFT
         - event: AddFee(indexed address,indexed address,uint256)
           handler: handleAddFee

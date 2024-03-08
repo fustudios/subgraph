@@ -21,7 +21,6 @@ export function createNft(collectionId: Address, tokenId: BigInt, userId: Bytes,
 
   let nftContract = NftContract.bind(collectionId);
   let tokenUri = nftContract.tokenURI(tokenId);
-  log.warning('URI: {}', [tokenUri.toString()]);
 
   let nft = new Nft(nftId);
   nft.collection = collectionId;
@@ -30,19 +29,17 @@ export function createNft(collectionId: Address, tokenId: BigInt, userId: Bytes,
   nft.user = userId;
   nft.createdAt = ts;
   nft.tokenUri = tokenUri;
+  nft.upgrades = [];
   nft.save();
 
   return nft;
 }
 
-export function createOrUpdateNft(collectionId: Address, tokenId: BigInt, userId: Bytes, ts: BigInt): Nft {
+export function createOrLoadNft(collectionId: Address, tokenId: BigInt, userId: Bytes, ts: BigInt): Nft {
   let nftId = getNftId(collectionId, tokenId);
 
   let nft = Nft.load(nftId);
-  if (nft) {
-    nft.user = userId;
-    nft.save();
-  } else {
+  if (!nft) {
     nft = createNft(collectionId, tokenId, userId, ts);
   }
   return nft;

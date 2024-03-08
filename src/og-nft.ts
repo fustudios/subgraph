@@ -1,7 +1,7 @@
 import { Transfer as TransferEvent } from '../generated/OgNft/OgNft';
 import { Collection } from '../generated/schema';
 import { createOrUpdateUser } from './utils/user';
-import { createOrUpdateNft, createTransfer } from './utils/nft';
+import { createOrLoadNft, createTransfer } from './utils/nft';
 import { BI0 } from './utils/const';
 import { fuOgNft } from './utils/network';
 import { Address } from '@graphprotocol/graph-ts';
@@ -24,7 +24,9 @@ export function handleTransfer(event: TransferEvent): void {
   let userId = event.params.to;
 
   createOrUpdateUser(userId, ts);
-  let nft = createOrUpdateNft(ogCollectionId, tokenId, userId, ts);
+  let nft = createOrLoadNft(ogCollectionId, tokenId, userId, ts);
+  nft.user = userId;
+  nft.save();
 
   createTransfer(event, nft.id);
 }

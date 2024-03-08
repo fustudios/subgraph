@@ -3,7 +3,7 @@ import { Collection, Nft } from '../generated/schema';
 import { Collection as CollectionTemplate } from '../generated/templates';
 import { BigInt, log } from '@graphprotocol/graph-ts';
 import { Nft as NftContract } from '../generated/CollectionUpgrade/Nft';
-import { createNft } from './utils/nft';
+import { createNft, createOrLoadNft } from './utils/nft';
 import { BI0, BI1 } from './utils/const';
 import { createOrUpdateUser } from './utils/user';
 
@@ -25,10 +25,16 @@ export function handleWhitelistCollection(event: WhitelistCollection): void {
 export function handleUpgradeNFT(event: UpgradeNFT): void {
   let collectionId = event.params.collection;
   let tokenId = event.params.id;
+  let upgrade = event.params.upgrade;
   let userId = event.transaction.from;
   let ts = event.block.timestamp;
 
-  log.warning('handleUpgradeNFT: {}, {}, {}', [userId.toHex(), collectionId.toHex(), tokenId.toString()]);
+  log.warning('handleUpgradeNFT: {}, {}, {}, {}', [
+    userId.toHex(),
+    collectionId.toHex(),
+    tokenId.toString(),
+    upgrade.toString(),
+  ]);
 
   createOrUpdateUser(userId, ts);
   let collection = Collection.load(collectionId);
@@ -37,7 +43,9 @@ export function handleUpgradeNFT(event: UpgradeNFT): void {
   } else {
     log.error('Collection not found: {}', [collectionId.toHex()]);
   }
-  createNft(collectionId, tokenId, userId, ts);
+  let nft = createOrLoadNft(collectionId, tokenId, userId, ts);
+  nft.upgrades = nft.upgrades.concat([upgrade]);
+  nft.save();
 }
 
 export function handleAddFee(event: AddFee): void {
