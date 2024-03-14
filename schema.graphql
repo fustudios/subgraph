@@ -8,13 +8,28 @@ type Transfer @entity(immutable: true) {
   transactionHash: Bytes!
 }
 
+enum CollectionType {
+  Og
+  External
+}
+
+enum TokenStandard {
+  ERC721
+#  ERC1155
+#  Punks
+}
+
 type Collection @entity {
   id: Bytes!
-  code: String
+  standard: TokenStandard!
+  type: CollectionType!
   name: String
   createdAt: BigInt!
-  numNftsUpgraded: BigInt!
+  numTokensUpgraded: BigInt!
+  numUpgrades: BigInt!
   fees: BigInt!
+  feesUpgrades: BigInt!
+  feesSponsorship: BigInt!
   nfts: [Nft!]! @derivedFrom(field: "collection")
 }
 
@@ -27,11 +42,12 @@ type Nft @entity {
   tokenUri: String
   createdAt: BigInt!
   upgrades: [Int!]!
+  isMinted: Boolean
   transfers: [Transfer!]! @derivedFrom(field: "nft")
 }
 
 type User @entity {
-  id: Bytes!
+  id: String!
   createdAt: BigInt!
   nfts: [Nft!]! @derivedFrom(field: "user")
 }

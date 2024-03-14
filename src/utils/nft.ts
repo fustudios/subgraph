@@ -1,8 +1,7 @@
-import { Transfer as TransferEvent } from '../../generated/OgNft/OgNft';
-import { Address, BigInt, Bytes, ethereum, log } from '@graphprotocol/graph-ts';
+import { Transfer as TransferEvent } from '../../generated/OgNft/ERC721';
+import { Address, BigInt, Bytes, ethereum } from '@graphprotocol/graph-ts';
 import { Nft, Transfer } from '../../generated/schema';
-import { createOrUpdateUser } from './user';
-import { Nft as NftContract } from '../../generated/CollectionUpgrade/Nft';
+import { ERC721 } from '../../generated/CollectionUpgrade/ERC721';
 
 export function getTransferId(event: ethereum.Event): string {
   return (
@@ -16,26 +15,29 @@ export function getNftId(collectionId: Address, tokenId: BigInt): string {
   return collectionId.toHex() + '_' + tokenId.toString();
 }
 
-export function createNft(collectionId: Address, tokenId: BigInt, userId: Bytes, ts: BigInt): Nft {
+export function createNft(collectionId: Address, tokenId: BigInt, userId: string | null, ts: BigInt): Nft {
   let nftId = getNftId(collectionId, tokenId);
 
-  let nftContract = NftContract.bind(collectionId);
+  let nftContract = ERC721.bind(collectionId);
   let tokenUri = nftContract.tokenURI(tokenId);
 
   let nft = new Nft(nftId);
   nft.collection = collectionId;
   nft.tokenId = tokenId;
-  nft.firstUser = userId;
-  nft.user = userId;
+  if (userId != null) {
+    nft.firstUser = userId;
+    nft.user = userId;
+  }
   nft.createdAt = ts;
   nft.tokenUri = tokenUri;
   nft.upgrades = [];
+  nft.isMinted = false;
   nft.save();
 
   return nft;
 }
 
-export function createOrLoadNft(collectionId: Address, tokenId: BigInt, userId: Bytes, ts: BigInt): Nft {
+export function createOrLoadNft(collectionId: Address, tokenId: BigInt, userId: string | null, ts: BigInt): Nft {
   let nftId = getNftId(collectionId, tokenId);
 
   let nft = Nft.load(nftId);

@@ -7,7 +7,7 @@ dataSources:
     network: {{network}}
     source:
       address: "{{fuOgNft}}"
-      abi: Nft
+      abi: ERC721
       startBlock: {{startBlock}}
     mapping:
       kind: ethereum/events
@@ -17,8 +17,8 @@ dataSources:
         - Transfer
         - Nft
       abis:
-        - name: Nft
-          file: ./abis/Nft.json
+        - name: ERC721
+          file: ./abis/ERC721.json
       eventHandlers:
         - event: Transfer(indexed address,indexed address,indexed uint256)
           handler: handleTransfer
@@ -40,14 +40,16 @@ dataSources:
       abis:
         - name: CollectionUpgrade
           file: ./abis/CollectionUpgrade.json
-        - name: Nft
-          file: ./abis/Nft.json
+        - name: ERC721
+          file: ./abis/ERC721.json
       eventHandlers:
-        - event: WhitelistCollection(indexed address)
+        - event: WhitelistCollection(indexed address,uint8)
           handler: handleWhitelistCollection
+        - event: SetCollectionStandard(indexed address,uint8)
+          handler: handleSetCollectionStandard
         - event: UpgradeNFT(indexed address,uint256,uint8)
           handler: handleUpgradeNFT
-        - event: AddFee(indexed address,indexed address,uint256)
+        - event: AddFee(indexed address,indexed address,uint256,bool)
           handler: handleAddFee
       file: ./src/upgrade.ts
 templates:
@@ -55,7 +57,7 @@ templates:
     name: Collection
     network: {{network}}
     source:
-      abi: Nft
+      abi: ERC721
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.8
@@ -64,8 +66,8 @@ templates:
         - Collection
         - Nft
       abis:
-        - name: Nft
-          file: ./abis/Nft.json
+        - name: ERC721
+          file: ./abis/ERC721.json
       eventHandlers:
         - event: Transfer(indexed address,indexed address,indexed uint256)
           handler: handleTransfer
